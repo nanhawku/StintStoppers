@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CVD API Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container {
+            background: white;
+            color: #333;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #667eea;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+            white-space: pre-wrap;
+            font-family: monospace;
+            display: none;
+        }
+        .success { border-left-color: #28a745; background: #d4edda; }
+        .error { border-left-color: #dc3545; background: #f8d7da; }
+        .status {
+            margin: 20px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .status.online { background: #d4edda; color: #155724; }
+        .status.offline { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🫀 CVD Risk API Test Page</h1>
+
+        <div id="apiStatus" class="status">
+            Checking API status...
+        </div>
+
+        <h2>Test the API</h2>
+        <p>Click the button below to test the prediction API with sample patient data:</p>
+
+        <button onclick="testHealthCheck()">1. Test Health Check</button>
+        <button onclick="testPrediction()">2. Test Prediction (High Risk)</button>
+        <button onclick="testPredictionLowRisk()">3. Test Prediction (Low Risk)</button>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000';
+
+        // Check API status on page load
+        window.addEventListener('DOMContentLoaded', checkAPIStatus);
+
+        async function checkAPIStatus() {
+            const statusDiv = document.getElementById('apiStatus');
+            try {
+                const response = await fetch(`${API_URL}/health`);
+                const data = await response.json();
+
+                if (data.status === 'healthy' && data.model_loaded) {
+                    statusDiv.className = 'status online';
+                    statusDiv.innerHTML = '✓ API Server is ONLINE and ready!';
+                } else {
+                    statusDiv.className = 'status offline';
+                    statusDiv.innerHTML = '⚠ API Server is running but model not loaded';
+                }
+            } catch (error) {
+                statusDiv.className = 'status offline';
+                statusDiv.innerHTML = '✗ API Server is OFFLINE - Make sure python api_server.py is running';
+            }
+        }
+
+        async function testHealthCheck() {
+            showResult('Testing health check endpoint...', '');
+
+            try {
+                const response = await fetch(`${API_URL}/health`);
+                const data = await response.json();
+
+                showResult(JSON.stringify(data, null, 2), 'success');
+            } catch (error) {
+                showResult(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testPrediction() {
+            showResult('Testing prediction with HIGH RISK patient data...', '');
+
+            const patientData = {
+                age: 65,
+                anaemia: 0,
+                creatinine_phosphokinase: 582,
+                diabetes: 0,
+                ejection_fraction: 20,
+                high_blood_pressure: 0,
+                platelets: 265000,
+                serum_creatinine: 1.9,
+                serum_sodium: 130,
+                sex: 1,
+                smoking: 0,
+                time: 4
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/predict`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(patientData)
+                });
+
+                const data = await response.json();
+
+                let resultText = 'Patient Data:\n' + JSON.stringify(patientData, null, 2);
+                resultText += '\n\nPrediction Result:\n' + JSON.stringify(data, null, 2);
+                resultText += '\n\n===================';
+                resultText += '\nCVD RISK: ' + data.cvd_risk;
+                resultText += '\nRISK LEVEL: ' + data.risk_level;
+                resultText += '\nPROBABILITY: ' + data.risk_percentage;
+                resultText += '\n===================';
+
+                showResult(resultText, 'success');
+            } catch (error) {
+                showResult(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testPredictionLowRisk() {
+            showResult('Testing prediction with LOW RISK patient data...', '');
+
+            const patientData = {
+                age: 45,
+                anaemia: 0,
+                creatinine_phosphokinase: 120,
+                diabetes: 0,
+                ejection_fraction: 60,
+                high_blood_pressure: 0,
+                platelets: 280000,
+                serum_creatinine: 1.0,
+                serum_sodium: 140,
+                sex: 0,
+                smoking: 0,
+                time: 150
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/predict`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(patientData)
+                });
+
+                const data = await response.json();
+
+                let resultText = 'Patient Data:\n' + JSON.stringify(patientData, null, 2);
+                resultText += '\n\nPrediction Result:\n' + JSON.stringify(data, null, 2);
+                resultText += '\n\n===================';
+                resultText += '\nCVD RISK: ' + data.cvd_risk;
+                resultText += '\nRISK LEVEL: ' + data.risk_level;
+                resultText += '\nPROBABILITY: ' + data.risk_percentage;
+                resultText += '\n===================';
+
+                showResult(resultText, 'success');
+            } catch (error) {
+                showResult(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        function showResult(text, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = text;
+            resultDiv.className = type;
+            resultDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

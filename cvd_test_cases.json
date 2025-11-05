@@ -1,0 +1,141 @@
+{
+  "test_cases": {
+    "high_risk_cases": [
+      {
+        "name": "High Risk Case 1 - Elderly with Low EF",
+        "description": "65-year-old male with very low ejection fraction and high creatinine",
+        "expected_result": "YES",
+        "data": {
+          "age": 65,
+          "anaemia": 0,
+          "creatinine_phosphokinase": 582,
+          "diabetes": 0,
+          "ejection_fraction": 20,
+          "high_blood_pressure": 0,
+          "platelets": 265000,
+          "serum_creatinine": 1.9,
+          "serum_sodium": 130,
+          "sex": 1,
+          "smoking": 0,
+          "time": 4
+        }
+      },
+      {
+        "name": "High Risk Case 2 - Multiple Conditions",
+        "description": "70-year-old with diabetes, high BP, and poor kidney function",
+        "expected_result": "YES",
+        "data": {
+          "age": 70,
+          "anaemia": 1,
+          "creatinine_phosphokinase": 460,
+          "diabetes": 1,
+          "ejection_fraction": 20,
+          "high_blood_pressure": 1,
+          "platelets": 270000,
+          "serum_creatinine": 1.8,
+          "serum_sodium": 134,
+          "sex": 1,
+          "smoking": 1,
+          "time": 10
+        }
+      }
+    ],
+    "low_risk_cases": [
+      {
+        "name": "Low Risk Case 1 - Young Healthy Female",
+        "description": "45-year-old healthy female with normal values",
+        "expected_result": "NO",
+        "data": {
+          "age": 45,
+          "anaemia": 0,
+          "creatinine_phosphokinase": 120,
+          "diabetes": 0,
+          "ejection_fraction": 60,
+          "high_blood_pressure": 0,
+          "platelets": 280000,
+          "serum_creatinine": 1.0,
+          "serum_sodium": 140,
+          "sex": 0,
+          "smoking": 0,
+          "time": 150
+        }
+      },
+      {
+        "name": "Low Risk Case 2 - Middle-aged Healthy Male",
+        "description": "50-year-old male with excellent cardiac function",
+        "expected_result": "NO",
+        "data": {
+          "age": 50,
+          "anaemia": 0,
+          "creatinine_phosphokinase": 100,
+          "diabetes": 0,
+          "ejection_fraction": 65,
+          "high_blood_pressure": 0,
+          "platelets": 300000,
+          "serum_creatinine": 0.9,
+          "serum_sodium": 138,
+          "sex": 1,
+          "smoking": 0,
+          "time": 200
+        }
+      },
+      {
+        "name": "Low Risk Case 3 - Young Active Person",
+        "description": "35-year-old with excellent health markers",
+        "expected_result": "NO",
+        "data": {
+          "age": 35,
+          "anaemia": 0,
+          "creatinine_phosphokinase": 80,
+          "diabetes": 0,
+          "ejection_fraction": 70,
+          "high_blood_pressure": 0,
+          "platelets": 290000,
+          "serum_creatinine": 0.8,
+          "serum_sodium": 142,
+          "sex": 0,
+          "smoking": 0,
+          "time": 300
+        }
+      },
+      {
+        "name": "Low Risk Case 4 - Senior with Good Management",
+        "description": "60-year-old with well-controlled vitals and good EF",
+        "expected_result": "NO",
+        "data": {
+          "age": 60,
+          "anaemia": 0,
+          "creatinine_phosphokinase": 150,
+          "diabetes": 0,
+          "ejection_fraction": 55,
+          "high_blood_pressure": 0,
+          "platelets": 275000,
+          "serum_creatinine": 1.1,
+          "serum_sodium": 139,
+          "sex": 1,
+          "smoking": 0,
+          "time": 180
+        }
+      },
+      {
+        "name": "Low Risk Case 5 - Non-smoker with Normal Labs",
+        "description": "52-year-old female, non-smoker, normal kidney and heart function",
+        "expected_result": "NO",
+        "data": {
+          "age": 52,
+          "anaemia": 0,
+          "creatinine_phosphokinase": 110,
+          "diabetes": 0,
+          "ejection_fraction": 58,
+          "high_blood_pressure": 0,
+          "platelets": 285000,
+          "serum_creatinine": 0.95,
+          "serum_sodium": 141,
+          "sex": 0,
+          "smoking": 0,
+          "time": 220
+        }
+      }
+    ]
+  }
+}
