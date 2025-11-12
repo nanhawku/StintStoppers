@@ -28,7 +28,7 @@
     *{ box-sizing: border-box; }
     body{
       font-family: 'Poppins', sans-serif;
-      background-image: "HB_icon\ copy.png";
+      background-image: url("HB_icon copy.png");
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
@@ -177,6 +177,23 @@
     }
     .theme-toggle:hover{ transform: translateY(-1px); }
 
+    /* === LOGOUT BUTTON (fixed, top-right next to theme toggle) === */
+    .logout-btn{
+      position: fixed; top: 16px; right: 120px;   /* sits left of theme toggle */
+      z-index: 5;
+      border: 1px solid var(--glass-border);
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: linear-gradient(135deg, var(--glass-grad1), var(--glass-grad2));
+      backdrop-filter: blur(10px) saturate(140%);
+      -webkit-backdrop-filter: blur(10px) saturate(140%);
+      color: var(--ink);
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.25);
+      display:none; /* shown only when logged in */
+    }
+    .logout-btn:hover{ transform: translateY(-1px); }
+
     /* Fallback when blur unsupported */
     @supports not ((backdrop-filter: blur(10px)) or (-webkit-backdrop-filter: blur(10px))){
       .glass-panel, input, select, .btn{ background: rgba(20,20,20,0.55); }
@@ -230,6 +247,8 @@
 <body>
   <!-- Theme toggle -->
   <button id="themeToggle" class="theme-toggle" type="button">🌙 Dark</button>
+  <!-- Logout (added) -->
+  <button id="logoutBtn" class="logout-btn" type="button">🚪 Logout</button>
 
   <div class="container">
     <!-- AUTH -->
@@ -422,10 +441,21 @@
       el.style.display = 'block';
       window.scrollTo({top:0, behavior:'smooth'});
     }
-    function handleAuthSuccess(){ showOnly(questionnaireSection); }
+    function handleAuthSuccess(){
+      showOnly(questionnaireSection);
+      // show logout when logged in
+      document.getElementById("logoutBtn").style.display = 'inline-block';
+    }
 
     /* ================== AUTH FLOW ================== */
-    auth.onAuthStateChanged(user => { user ? handleAuthSuccess() : showOnly(authSection); });
+    auth.onAuthStateChanged(user => {
+      if(user){
+        handleAuthSuccess();
+      }else{
+        showOnly(authSection);
+        document.getElementById("logoutBtn").style.display = 'none';
+      }
+    });
 
     function createUserAccount(){
       const email = emailInput.value.trim();
@@ -444,11 +474,17 @@
         .catch(err => authErrorDiv.textContent = err.message);
     }
 
-    function logoutUser() {
-    auth.signOut().then(() => {
-      console.log(" Signed Out.");
+    /* ================== LOGOUT (added) ================== */
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      auth.signOut()
+        .then(() => {
+          showOnly(authSection);
+          emailInput.value = "";
+          passwordInput.value = "";
+          document.getElementById("logoutBtn").style.display = 'none';
+        })
+        .catch(err => alert("Error signing out: " + err.message));
     });
-    }
 
     /* ================== VALIDATION HELPERS ================== */
     function num(x){ const n = Number(x); return Number.isFinite(n) ? n : null; }
