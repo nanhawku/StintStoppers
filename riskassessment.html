@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Right Beat</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
+  <style>
+    /* === THEME TOKENS (Light default; Dark via [data-theme="dark"]) === */
+    :root{
+      --ink: #000;
+      --glass-grad1: rgba(255,255,255,0.22);
+      --glass-grad2: rgba(255,255,255,0.06);
+      --glass-border: rgba(0,0,0,0.35);
+      --divider: rgba(0,0,0,0.25);
+      --error: #e11d48;           /* rose-600 */
+      --error-bg: rgba(225, 29, 72, 0.12);
+      --brand: rgba(218, 60, 49, 0.89); /* optional accent glow */
+    }
+    :root[data-theme="dark"]{
+      --ink: #fff;
+      --glass-grad1: rgba(0,0,0,0.35);
+      --glass-grad2: rgba(0,0,0,0.15);
+      --glass-border: rgba(255,255,255,0.35);
+      --divider: rgba(255,255,255,0.25);
+    }
+
+    *{ box-sizing: border-box; }
+    body{
+      font-family: 'Poppins', sans-serif;
+      background-image: url("HB_icon copy.png");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      min-height: 100vh;
+      margin: 0;
+      display:flex; justify-content:center; align-items:center;
+      padding: 24px;
+      color: var(--ink);
+    }
+    .container{ background: transparent; padding:0; display:grid; gap:20px; }
+
+    /* === LIQUID GLASS PANEL === */
+    .glass-panel{
+      position: relative;
+      width: min(720px, 92vw);
+      padding: 28px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, var(--glass-grad1), var(--glass-grad2));
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      overflow: hidden;
+      backdrop-filter: blur(14px) saturate(140%);
+      -webkit-backdrop-filter: blur(14px) saturate(140%);
+    }
+    .glass-panel::before{
+      content:"";
+      position:absolute; inset:-40% -40% auto -40%;
+      height: 60%;
+      transform: rotate(8deg);
+      background: radial-gradient(ellipse at center,
+        rgba(255,255,255,0.35) 0%,
+        rgba(255,255,255,0.12) 35%,
+        rgba(255,255,255,0) 70%);
+      pointer-events:none;
+      animation: drift 14s linear infinite;
+    }
+    @keyframes drift {
+      0%   { transform: translateX(-10%) rotate(8deg); }
+      50%  { transform: translateX(10%)  rotate(8deg); }
+      100% { transform: translateX(-10%) rotate(8deg); }
+    }
+
+    h2{
+      text-align:center; font-weight:600; color: var(--ink);
+      margin: 0 0 18px 0; text-shadow: none;
+    }
+    p.subtle { color: var(--ink); opacity:.9; text-align:center; margin-top:-6px; }
+
+    label{ font-weight:600; color: var(--ink); display:block; margin-bottom:6px; }
+    small.help { color: var(--ink); opacity:.85; display:block; margin-top:-4px; margin-bottom:10px; }
+
+    /* === GLASS INPUTS & SELECTS === */
+    input[type="email"], input[type="password"],
+    input[type="text"], input[type="number"], select{
+      width:100%;
+      padding:12px 14px; margin-bottom:14px;
+      border-radius:12px; border:1px solid var(--glass-border);
+      background: linear-gradient(135deg, rgba(255,255,255,0.22), rgba(255,255,255,0.06));
+      color: var(--ink); outline: none;
+      backdrop-filter: blur(10px) saturate(140%);
+      -webkit-backdrop-filter: blur(10px) saturate(140%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), 0 6px 20px rgba(0,0,0,0.25);
+      appearance: none;
+    }
+    input::placeholder{ color: rgba(0,0,0,0.6); }
+    select:invalid{ color: rgba(0,0,0,0.6); }
+    :root[data-theme="dark"] input::placeholder{ color: rgba(255,255,255,0.7); }
+    :root[data-theme="dark"] select:invalid{ color: rgba(255,255,255,0.7); }
+    option{ color:#111; }
+
+    input:focus, select:focus{
+      border-color: var(--ink);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.25),
+                  0 0 0 3px rgba(0,0,0,0.08),
+                  0 8px 24px rgba(0,0,0,0.35);
+    }
+
+    /* === GLASS BUTTONS === */
+    .btn{
+      width:100%; padding:12px 14px; margin-top:8px;
+      border-radius:14px; border:1px solid var(--glass-border);
+      background: linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.08));
+      color: var(--ink); font-size:16px; font-weight:600; cursor:pointer;
+      backdrop-filter: blur(12px) saturate(140%);
+      -webkit-backdrop-filter: blur(12px) saturate(140%);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.25);
+      transition: transform .15s ease, box-shadow .2s ease, background .2s ease;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 14px 36px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.35);
+      background: linear-gradient(135deg, rgba(255,255,255,0.32), rgba(255,255,255,0.12));
+    }
+    .btn:active{
+      transform: translateY(0);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.35), inset 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .btn-accent{ position:relative; }
+    .btn-accent::after{
+      content:""; position:absolute; inset:-2px; border-radius:inherit;
+      box-shadow: 0 0 24px 4px rgba(218,60,49,0.35), 0 0 60px 12px rgba(218,60,49,0.18) inset;
+      pointer-events:none;
+    }
+
+    .error, .strength, .strong{ color: var(--ink); font-size:12px; margin-top:-8px; margin-bottom:10px; opacity:.95; }
+
+    /* === GRID for questionnaire === */
+    .form-grid{
+      display:grid; grid-template-columns: 1fr; gap:14px 16px; align-items:end;
+    }
+    .row{ display:grid; grid-template-columns: 1fr 1fr; gap:16px; }
+    @media (min-width: 720px){
+      .form-grid{ grid-template-columns: 1fr 1fr; }
+      .span-2{ grid-column: 1 / -1; }
+    }
+    hr.divider{ margin: 20px 0; border: none; height:1px; background: var(--divider); }
+
+    /* === INVALID STATE (red) === */
+    .is-invalid{
+      border-color: var(--error) !important;
+      box-shadow:
+        0 0 0 3px var(--error-bg),
+        0 10px 24px rgba(0,0,0,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.15) !important;
+    }
+    .field-error{
+      margin-top: -6px;
+      margin-bottom: 10px;
+      font-size: 12px;
+      color: var(--error) !important;
+    }
+
+    /* === THEME TOGGLE (fixed) === */
+    .theme-toggle{
+      position: fixed; top: 16px; right: 16px;
+      z-index: 5;
+      border: 1px solid var(--glass-border);
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: linear-gradient(135deg, var(--glass-grad1), var(--glass-grad2));
+      backdrop-filter: blur(10px) saturate(140%);
+      -webkit-backdrop-filter: blur(10px) saturate(140%);
+      color: var(--ink);
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.25);
+    }
+    .theme-toggle:hover{ transform: translateY(-1px); }
+
+    /* === LOGOUT BUTTON (fixed, top-right next to theme toggle) === */
+    .logout-btn{
+      position: fixed; top: 16px; right: 120px;   /* sits left of theme toggle */
+      z-index: 5;
+      border: 1px solid var(--glass-border);
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: linear-gradient(135deg, var(--glass-grad1), var(--glass-grad2));
+      backdrop-filter: blur(10px) saturate(140%);
+      -webkit-backdrop-filter: blur(10px) saturate(140%);
+      color: var(--ink);
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.25);
+      display:none; /* shown only when logged in */
+    }
+    .logout-btn:hover{ transform: translateY(-1px); }
+
+    /* Fallback when blur unsupported */
+    @supports not ((backdrop-filter: blur(10px)) or (-webkit-backdrop-filter: blur(10px))){
+      .glass-panel, input, select, .btn{ background: rgba(20,20,20,0.55); }
+      :root{ --ink: #fff; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Theme toggle -->
+  <button id="themeToggle" class="theme-toggle" type="button">🌙 Dark</button>
+  <!-- Logout (added) -->
+  <button id="logoutBtn" class="logout-btn" type="button">🚪 Logout</button>
+
+  <div class="container">
+    <!-- AUTH -->
+    <div class="glass-panel" id="authSection">
+      <h2 id="formTitle">The Right Beat 🫀</h2>
+      <p class="subtle">Sign in to continue</p>
+
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="you@example.com" required>
+
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="••••••••" required>
+
+      <div id="authError" class="error"></div>
+
+      <button type="button" onclick="signInUser()" class="btn btn-accent">Login</button>
+      <button type="button" onclick="createUserAccount()" class="btn"><em>New User?</em> Create Account</button>
+    </div>
+
+    <!-- QUESTIONNAIRE -->
+    <div class="glass-panel" id="questionnaireSection" style="display:none;">
+      <h2>Risk Assessment</h2>
+      <p class="subtle">All fields are required.</p>
+
+      <form id="intakeForm" novalidate>
+        <div class="form-grid">
+          <div>
+            <label for="age">Current Age</label>
+            <input type="number" id="age" min="18" max="120" required placeholder="e.g., 34">
+          </div>
+
+          <div>
+            <label for="sex">Sex</label>
+            <select id="sex" required>
+              <option value="" disabled selected>Select…</option>
+              <option>Female</option>
+              <option>Male</option>
+              <option>Intersex</option>
+              <option>Prefer not to say</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="race">Race</label>
+            <select id="race" required>
+              <option value="" disabled selected>Select…</option>
+              <option>Black or African American</option>
+              <option>White</option>
+              <option>Hispanic or Latino</option>
+              <option>Asian</option>
+              <option>American Indian or Alaska Native</option>
+              <option>Native Hawaiian or Other Pacific Islander</option>
+              <option>Other / Multiple</option>
+              <option>Prefer not to say</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="sbp">Systolic Blood Pressure (mm Hg)</label>
+            <input type="number" id="sbp" min="90" max="200" required placeholder="90–200">
+            <small class="help">Must be between 90–200</small>
+          </div>
+
+          <div>
+            <label for="dbp">Diastolic Blood Pressure (mm Hg)</label>
+            <input type="number" id="dbp" min="60" max="130" required placeholder="60–130">
+            <small class="help">Must be between 60–130</small>
+          </div>
+
+          <div>
+            <label for="tc">Total Cholesterol (mg/dL)</label>
+            <input type="number" id="tc" min="80" max="400" required placeholder="e.g., 190">
+          </div>
+
+          <div>
+            <label for="hdl">HDL Cholesterol (mg/dL)</label>
+            <input type="number" id="hdl" min="10" max="150" required placeholder="e.g., 55">
+          </div>
+
+          <div>
+            <label for="ldl">LDL Cholesterol (mg/dL)</label>
+            <input type="number" id="ldl" min="10" max="400" required placeholder="e.g., 120">
+          </div>
+
+          <div>
+            <label for="diabetes">History of Diabetes?</label>
+            <select id="diabetes" required>
+              <option value="" disabled selected>Select…</option>
+              <option>No</option>
+              <option>Yes</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="smoker">Smoker?</label>
+            <select id="smoker" required>
+              <option value="" disabled selected>Select…</option>
+              <option>No</option>
+              <option>Yes</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="htnTx">On Hypertension Treatment?</label>
+            <select id="htnTx" required>
+              <option value="" disabled selected>Select…</option>
+              <option>No</option>
+              <option>Yes</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="statin">On a Statin?</label>
+            <select id="statin" required>
+              <option value="" disabled selected>Select…</option>
+              <option>No</option>
+              <option>Yes</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="aspirin">On Aspirin Therapy?</label>
+            <select id="aspirin" required>
+              <option value="" disabled selected>Select…</option>
+              <option>No</option>
+              <option>Yes</option>
+            </select>
+          </div>
+
+          <div class="span-2">
+            <label for="refine">Refine current risk estimation using data from a previous visit?</label>
+            <select id="refine" required>
+              <option value="" disabled selected>Select…</option>
+              <option>No</option>
+              <option>Yes</option>
+            </select>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <button type="submit" class="btn btn-accent">Save & Continue</button>
+        <div id="intakeError" class="error"></div>
+      </form>
+    </div>
+
+    <!-- POST-INTAKE (placeholder for next step) -->
+    <div class="glass-panel" id="postIntakeSection" style="display:none;">
+      <h2>Thanks! ✅</h2>
+      <p class="subtle">Your intake has been saved.</p>
+      <button class="btn">Go to Dashboard</button>
+    </div>
+  </div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+  <script>
+    /* ================== THEME INIT + TOGGLE ================== */
+    (function initTheme(){
+      const root = document.documentElement;
+      const saved = localStorage.getItem("trb-theme");
+      if (saved === "dark") root.setAttribute("data-theme","dark");
+      updateToggleLabel();
+
+      document.getElementById("themeToggle").addEventListener("click", () => {
+        const isDark = root.getAttribute("data-theme") === "dark";
+        root.setAttribute("data-theme", isDark ? "light" : "dark");
+        localStorage.setItem("trb-theme", isDark ? "light" : "dark");
+        updateToggleLabel();
+      });
+
+      function updateToggleLabel(){
+        const btn = document.getElementById("themeToggle");
+        const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+        btn.textContent = isDark ? "☀️ Light" : "🌙 Dark";
+      }
+    })();
+
+    /* ================== FIREBASE INIT ================== */
+    const firebaseConfig = {
+      apiKey: "AIzaSyC4tOQCxX0XZLLAO6VKte4RVgd2RM4MnO8",
+      authDomain: "comp-496.firebaseapp.com",
+      projectId: "comp-496",
+      storageBucket: "comp-496.firebasestorage.app",
+      messagingSenderId: "412812122221",
+      appId: "1:412812122221:web:7ff271b5628ccb98480764",
+      measurementId: "G-37H72QTCEE"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db   = firebase.firestore();
+
+    /* ================== SECTION REFS ================== */
+    const authSection          = document.getElementById("authSection");
+    const questionnaireSection = document.getElementById("questionnaireSection");
+    const postIntakeSection    = document.getElementById("postIntakeSection");
+
+    /* ================== AUTH REFS ================== */
+    const emailInput   = document.getElementById("email");
+    const passwordInput= document.getElementById("password");
+    const authErrorDiv = document.getElementById("authError");
+
+    /* ================== INTAKE REFS ================== */
+    const intakeForm   = document.getElementById("intakeForm");
+    const intakeError  = document.getElementById("intakeError");
+
+    /* ================== VIEW HELPERS ================== */
+    function showOnly(el){
+      [authSection, questionnaireSection, postIntakeSection].forEach(s => s.style.display = 'none');
+      el.style.display = 'block';
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+    function handleAuthSuccess(){ 
+      showOnly(questionnaireSection); 
+      // show logout when logged in
+      document.getElementById("logoutBtn").style.display = 'inline-block';
+    }
+
+    /* ================== AUTH FLOW ================== */
+    auth.onAuthStateChanged(user => { 
+      if(user){
+        handleAuthSuccess(); 
+      }else{
+        showOnly(authSection); 
+        document.getElementById("logoutBtn").style.display = 'none';
+      }
+    });
+
+    function createUserAccount(){
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+      authErrorDiv.textContent = "";
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(() => alert("Account Created Successfully!"))
+        .catch(err => authErrorDiv.textContent = err.message);
+    }
+    function signInUser(){
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+      authErrorDiv.textContent = "";
+      auth.signInWithEmailAndPassword(email, password)
+        .then(() => { /* onAuthStateChanged handles navigation */ })
+        .catch(err => authErrorDiv.textContent = err.message);
+    }
+
+    /* ================== LOGOUT (added) ================== */
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      auth.signOut()
+        .then(() => {
+          showOnly(authSection);
+          emailInput.value = "";
+          passwordInput.value = "";
+          document.getElementById("logoutBtn").style.display = 'none';
+        })
+        .catch(err => alert("Error signing out: " + err.message));
+    });
+
+    /* ================== VALIDATION HELPERS ================== */
+    function num(x){ const n = Number(x); return Number.isFinite(n) ? n : null; }
+
+    function setFieldError(id, msg){
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.add("is-invalid");
+      el.setAttribute("aria-invalid", "true");
+
+      // attach or update a small .field-error right after field
+      let err = el.nextElementSibling && el.nextElementSibling.classList?.contains("field-error")
+                ? el.nextElementSibling : null;
+      if (!err){
+        err = document.createElement("small");
+        err.className = "field-error";
+        el.insertAdjacentElement("afterend", err);
+      }
+      err.textContent = msg;
+    }
+    function clearFieldError(id){
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.remove("is-invalid");
+      el.removeAttribute("aria-invalid");
+      const next = el.nextElementSibling;
+      if (next && next.classList?.contains("field-error")) next.remove();
+      // also clear native validity so future submits work
+      el.setCustomValidity("");
+    }
+
+    // Live cleanup when user types/changes
+    ["age","sex","race","sbp","dbp","tc","hdl","ldl","diabetes","smoker","htnTx","statin","aspirin","refine"]
+      .forEach(id => {
+        const el = document.getElementById(id);
+        const evt = el?.tagName === "SELECT" ? "change" : "input";
+        el?.addEventListener(evt, () => clearFieldError(id));
+      });
+
+    /* ================== INTAKE SUBMIT ================== */
+    intakeForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      intakeError.textContent = "";
+
+      const user = auth.currentUser;
+      if(!user){
+        intakeError.textContent = "You must be logged in.";
+        showOnly(authSection);
+        return;
+      }
+
+      // Gather values
+      const v = (id) => document.getElementById(id).value;
+      const payload = {
+        age: num(v("age")),
+        sex: v("sex"),
+        race: v("race"),
+        sbp: num(v("sbp")),
+        dbp: num(v("dbp")),
+        totalChol: num(v("tc")),
+        hdl: num(v("hdl")),
+        ldl: num(v("ldl")),
+        diabetes: v("diabetes") === "Yes",
+        smoker: v("smoker") === "Yes",
+        onHypertensionTx: v("htnTx") === "Yes",
+        onStatin: v("statin") === "Yes",
+        onAspirin: v("aspirin") === "Yes",
+        refineUsingPrevious: v("refine") === "Yes",
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+
+      // HTML5 validity first: mark all invalid and show UA messages inline
+      if (!intakeForm.checkValidity()){
+        const invalidEls = intakeForm.querySelectorAll(":invalid");
+        invalidEls.forEach(el => {
+          const id = el.id;
+          const msg = el.validationMessage || "Please fill out this field.";
+          setFieldError(id, msg);
+        });
+        invalidEls[0]?.focus();
+        return;
+      }
+
+      // Custom numeric ranges (explicit messages)
+      const inRange = (val, min, max) => typeof val === "number" && !Number.isNaN(val) && val >= min && val <= max;
+      let hardFail = false;
+
+      if (!inRange(payload.sbp, 90, 200)) { setFieldError("sbp", "Systolic must be between 90–200 mm Hg."); hardFail = true; }
+      if (!inRange(payload.dbp, 60, 130)) { setFieldError("dbp", "Diastolic must be between 60–130 mm Hg."); hardFail = true; }
+
+      ["age","tc","hdl","ldl"].forEach(id => {
+        const val = document.getElementById(id).value.trim();
+        if (val === "") { setFieldError(id, "This field is required."); hardFail = true; }
+      });
+
+      if (hardFail){
+        const first = intakeForm.querySelector(".is-invalid");
+        first?.focus();
+        return;
+      }
+
+      try{
+        // Save as a new visit under the user
+        await db.collection("cvd_intake").doc(user.uid).collection("visits").add(payload);
+        showOnly(postIntakeSection);
+      }catch(err){
+        console.error(err);
+        intakeError.textContent = "Error saving intake: " + err.message;
+      }
+    });
+  </script>
+</body>
+</html>
