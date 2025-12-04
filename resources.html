@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Right Beat — Heart Health Resources</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
+  <style>
+    /* === THEME TOKENS (Light default; Dark via [data-theme="dark"]) === */
+    :root{
+      --ink:#000;
+      --glass-grad1: rgba(255,255,255,0.22);
+      --glass-grad2: rgba(255,255,255,0.06);
+      --glass-border: rgba(0,0,0,0.35);
+      --divider: rgba(0,0,0,0.25);
+      --brand: rgba(218, 60, 49, 0.89);
+      --card-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      --ok:#16a34a; --warn:#eab308; --danger:#e11d48;
+    }
+    :root[data-theme="dark"]{
+      --ink:#fff;
+      --glass-grad1: rgba(0,0,0,0.35);
+      --glass-grad2: rgba(0,0,0,0.15);
+      --glass-border: rgba(255,255,255,0.35);
+      --divider: rgba(255,255,255,0.25);
+      --card-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    }
+
+    *{box-sizing:border-box}
+    body{
+      font-family:'Poppins',sans-serif;
+      background-image:url("HB_icon copy.png");
+      background-size:cover; background-position:center; background-attachment:fixed;
+      min-height:100vh; margin:0; color:var(--ink);
+      display:flex; justify-content:center; align-items:flex-start; padding:32px 20px;
+    }
+
+    .wrap{width:min(1100px, 96vw); display:grid; gap:20px;}
+    .header{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+    }
+    .title{
+      padding:18px 22px; border-radius:18px; border:1px solid var(--glass-border);
+      background:linear-gradient(135deg,var(--glass-grad1),var(--glass-grad2));
+      backdrop-filter: blur(14px) saturate(140%); -webkit-backdrop-filter: blur(14px) saturate(140%);
+      box-shadow:var(--card-shadow);
+      width:100%;
+    }
+    .title h1{ margin:0; font-weight:600; font-size:clamp(20px, 3.2vw, 28px); color:var(--ink); }
+    .title p{ margin:.25rem 0 0; opacity:.9 }
+
+    .theme-toggle{
+      border:1px solid var(--glass-border);
+      border-radius:999px; padding:10px 14px;
+      background:linear-gradient(135deg,var(--glass-grad1),var(--glass-grad2));
+      color:var(--ink); cursor:pointer;
+      backdrop-filter: blur(10px) saturate(140%); -webkit-backdrop-filter: blur(10px) saturate(140%);
+      box-shadow:0 10px 24px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.25);
+      height: fit-content;
+    }
+    .theme-toggle:hover{ transform: translateY(-1px); }
+
+    .grid{
+      display:grid; gap:20px;
+      grid-template-columns: repeat(auto-fill, minmax(280px,1fr));
+    }
+
+    .card{
+      position:relative;
+      border:1px solid var(--glass-border); border-radius:18px;
+      background:linear-gradient(135deg,var(--glass-grad1),var(--glass-grad2));
+      box-shadow:var(--card-shadow);
+      backdrop-filter: blur(12px) saturate(140%); -webkit-backdrop-filter: blur(12px) saturate(140%);
+      padding:18px;
+      display:flex; flex-direction:column; gap:10px;
+    }
+    .card h3{ margin:0; font-size:18px; }
+    .card p{ margin:0; opacity:.9; line-height:1.5; }
+    .badge{ display:inline-block; padding:4px 10px; border-radius:999px; font-size:12px; font-weight:600; }
+    .badge.emergency{ background:rgba(225,29,72,.12); color:var(--danger); border:1px solid rgba(225,29,72,.4);}
+    .badge.action{ background:rgba(22,163,74,.12); color:var(--ok); border:1px solid rgba(22,163,74,.35);}
+    .card .links{ display:flex; flex-wrap:wrap; gap:10px; margin-top:6px; }
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:8px;
+      padding:10px 12px; border-radius:12px; text-decoration:none;
+      border:1px solid var(--glass-border); color:var(--ink);
+      background:linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.08));
+      backdrop-filter: blur(10px) saturate(140%); -webkit-backdrop-filter: blur(10px) saturate(140%);
+      box-shadow:0 8px 20px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.25);
+      transition:transform .15s ease, box-shadow .2s ease, background .2s ease;
+      font-weight:600; font-size:14px;
+    }
+    .btn:hover{ transform:translateY(-1px); box-shadow:0 12px 28px rgba(0,0,0,.35); }
+    .note{
+      font-size:13px; opacity:.85; margin-top:8px;
+    }
+    hr{ border:none; height:1px; background:var(--divider); margin:6px 0 2px; }
+
+    .footer{
+      text-align:center; opacity:.8; font-size:12px;
+    }
+    .back{
+      text-decoration:none; font-weight:600; color:var(--ink);
+      border-bottom:2px solid currentColor; padding-bottom:2px;
+    }
+
+    /* Blur fallback */
+    @supports not ((backdrop-filter: blur(10px)) or (-webkit-backdrop-filter: blur(10px))){
+      .card, .title, .theme-toggle{ background: rgba(20,20,20,0.55); }
+      :root{ --ink:#fff; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div class="title">
+        <h1>Heart Health Resources</h1>
+        <p>Curated, trustworthy links to help you manage cardiovascular risk. <a href="index.html" class="back" aria-label="Back to intake">Back to intake</a></p>
+      </div>
+      <button id="themeToggle" class="theme-toggle" type="button">🌙 Dark</button>
+    </div>
+
+    <div class="grid">
+      <!-- Emergency/Warning signs -->
+      <section class="card">
+        <span class="badge emergency">Emergency</span>
+        <h3>Heart Attack Warning Signs</h3>
+        <p>If you or someone else has chest pressure, shortness of breath, or pain in arm, neck, jaw, or back, call 911 immediately.</p>
+        <div class="links">
+          <a class="btn" href="https://www.heart.org/en/health-topics/heart-attack/warning-signs-of-a-heart-attack" target="_blank" rel="noopener">AHA: Warning Signs</a>
+          <a class="btn" href="https://www.heart.org/en/-/media/Files/Health-Topics/Answers-by-Heart/What-Are-the-Warning-Signs-of-Heart-Attack.pdf" target="_blank" rel="noopener">AHA PDF (English)</a>
+        </div>
+      </section>
+
+      <!-- Blood pressure -->
+      <section class="card">
+        <span class="badge action">Action</span>
+        <h3>Manage High Blood Pressure</h3>
+        <p>How to monitor, set goals, and work with your care team to control hypertension.</p>
+        <div class="links">
+          <a class="btn" href="https://www.cdc.gov/high-blood-pressure/living-with/index.html" target="_blank" rel="noopener">CDC: Living With HBP</a>
+          <a class="btn" href="https://www.cdc.gov/high-blood-pressure/index.html" target="_blank" rel="noopener">CDC: HBP Overview</a>
+        </div>
+      </section>
+
+      <!-- Cholesterol & meds -->
+      <section class="card">
+        <span class="badge action">Action</span>
+        <h3>Cholesterol & Medicines</h3>
+        <p>Understand LDL, HDL, and treatment options including statins. Always decide on aspirin with your clinician.</p>
+        <div class="links">
+          <a class="btn" href="https://www.heart.org/en/health-topics/cholesterol" target="_blank" rel="noopener">AHA: Cholesterol</a>
+          <a class="btn" href="https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/aspirin-to-prevent-cardiovascular-disease-preventive-medication" target="_blank" rel="noopener">USPSTF: Aspirin Use</a>
+        </div>
+        <p class="note">Aspirin for primary prevention isn’t routine—use shared decision-making.</p>
+      </section>
+
+      <!-- DASH diet -->
+      <section class="card">
+        <span class="badge action">Action</span>
+        <h3>DASH Eating Plan</h3>
+        <p>Evidence-based meal pattern that lowers blood pressure—no special foods, just balanced meals and lower sodium.</p>
+        <div class="links">
+          <a class="btn" href="https://www.nhlbi.nih.gov/education/dash-eating-plan" target="_blank" rel="noopener">NHLBI: DASH Overview</a>
+          <a class="btn" href="https://www.nhlbi.nih.gov/sites/default/files/publications/WeekOnDASH.pdf" target="_blank" rel="noopener">1-Week DASH Menu (PDF)</a>
+        </div>
+      </section>
+
+      <!-- Diabetes & heart -->
+      <section class="card">
+        <span class="badge action">Action</span>
+        <h3>Diabetes & Your Heart</h3>
+        <p>Diabetes roughly doubles heart disease risk—learn steps to protect your heart.</p>
+        <div class="links">
+          <a class="btn" href="https://diabetes.org/about-diabetes/complications/cardiovascular-disease" target="_blank" rel="noopener">ADA: CVD & Diabetes</a>
+          <a class="btn" href="https://diabetes.org/health-wellness/diabetes-and-your-heart/diabetes-affect-your-heart" target="_blank" rel="noopener">ADA: How Diabetes Affects Your Heart</a>
+        </div>
+      </section>
+
+      <!-- Quit smoking -->
+      <section class="card">
+        <span class="badge action">Action</span>
+        <h3>Quit Smoking</h3>
+        <p>Stopping tobacco is one of the biggest single actions to reduce CVD risk. Free coaching, apps, and text support.</p>
+        <div class="links">
+          <a class="btn" href="https://smokefree.gov/" target="_blank" rel="noopener">Smokefree.gov</a>
+          <a class="btn" href="https://smokefree.gov/tools-tips/get-extra-help/free-resources" target="_blank" rel="noopener">Free Quit Resources</a>
+        </div>
+      </section>
+
+      <!-- Physical activity -->
+      <section class="card">
+        <span class="badge action">Action</span>
+        <h3>Move More (Activity Goals)</h3>
+        <p>Most adults need at least 150 minutes/week of moderate activity + 2 days of muscle-strengthening.</p>
+        <div class="links">
+          <a class="btn" href="https://www.cdc.gov/physical-activity-basics/guidelines/adults.html" target="_blank" rel="noopener">CDC: Adult Activity</a>
+          <a class="btn" href="https://www.cdc.gov/healthy-weight-growth/physical-activity/index.html" target="_blank" rel="noopener">CDC: Activity & Weight</a>
+        </div>
+      </section>
+    </div>
+
+    <div class="footer">
+      <hr>
+      <p>Educational links only; not a substitute for professional medical advice. Call 911 for emergencies.</p>
+    </div>
+  </div>
+
+  <script>
+    // Persisted Dark/Light theme (matches your index.html behavior)
+    (function initTheme(){
+      const root = document.documentElement;
+      const saved = localStorage.getItem("trb-theme");
+      if (saved === "dark") root.setAttribute("data-theme","dark");
+      updateToggleLabel();
+
+      document.getElementById("themeToggle").addEventListener("click", () => {
+        const isDark = root.getAttribute("data-theme") === "dark";
+        root.setAttribute("data-theme", isDark ? "light" : "dark");
+        localStorage.setItem("trb-theme", isDark ? "light" : "dark");
+        updateToggleLabel();
+      });
+
+      function updateToggleLabel(){
+        const btn = document.getElementById("themeToggle");
+        const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+        btn.textContent = isDark ? "☀️ Light" : "🌙 Dark";
+      }
+    })();
+  </script>
+</body>
+</html>
